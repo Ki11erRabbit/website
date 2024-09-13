@@ -1,0 +1,23 @@
+baseURL = 'https://killerrabbit.xyz/'
+languageCode = 'en-us'
+title = 'My Static Website'
+theme = 'gokarna'
+
+enableRobotsTXT = true
+
+[menu]
+    [[menu.main]]
+        identifier = "posts"
+        url = "/posts/"
+        pre = ""
+        post = ""
+        name = "Posts"
+        weight = 1
+    [[menu.main]]
+        identifier = "resume"
+        url = "/resume/"
+        pre = ""
+        post = ""
+        name = "Resume"
+        weight = 1
+
