@@ -3,6 +3,7 @@ title = 'Resume'
 date = 2024-09-13T11:51:41-06:00
 draft = true
 type = 'page'
+showTableOfContents = true
 +++
 
 # Alec Davis
@@ -48,7 +49,7 @@ In no particular order
 ### BYU Intro to Programming TA
 ##### Teacher's Assistant (August 2022 - December 2022) Provo, UT
 * Helped beginners develop programming skills.
-* Provided help to develop their problem solving skills
+* Provided help novices to develop their problem solving skills
 * Solved technical problems when setting up Python on student machines
 
 ## Projects

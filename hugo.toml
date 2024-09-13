@@ -5,6 +5,12 @@ theme = 'gokarna'
 
 enableRobotsTXT = true
 
+[markup]
+	[markup.tableOfContents]
+		startLevel = 1
+		endLevel = 3
+		ordered = false
+
 [menu]
     [[menu.main]]
         identifier = "posts"
