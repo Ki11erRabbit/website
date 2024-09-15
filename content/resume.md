@@ -1,7 +1,6 @@
 +++
 title = 'Resume'
 date = 2024-09-13T11:51:41-06:00
-draft = true
 type = 'page'
 showTableOfContents = true
 +++
