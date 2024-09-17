@@ -19,9 +19,9 @@ I propose that streams (pipes, sockets, etc) can be manipulated freely just like
 This is the syntax I suggest for manipulating streams:
 ```
 # accessing a specific stream
-@0 stdin
-@1 stdout
-@2 stderr
+@0 #stdin
+@1 #stdout
+@2 #stderr
 
 # Stream capturing
 # That is, converting a stream into a string
@@ -37,6 +37,17 @@ This is the syntax I suggest for manipulating streams:
 
 # Accessing Bound Streams
 # That is, accessing a stream variable and passing it into a pipeline.
-(@hello)| grep e
+@hello | grep e
 
 ```
+
+And to allow this we need to make the following changes to the shell language.
+```
+# Variable Binding
+$hello='hello'
+
+# Variable expansion
+'${hello}'
+
+```
+
