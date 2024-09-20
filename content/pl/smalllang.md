@@ -37,42 +37,31 @@ struct Object {
 }
 
 struct VTable {
-    handle_message: fn(object: *mut Object, message: *const Object) -> *const Object
+    handle_message: fn(object: usize, message: usize, receiver: *mut usize, outmessage: *mut usize, response: *mut usize)
 }
 
 ```
+The `handle_message` function is how an object can respond to messages. The `usize`s the object's references that can be used to access an object from the global object table.
+It takes the object ref and message ref as well as a pointers that indicate who to send a new message to, what the message ref is, and a message ref to send back to the sender of the message.
 
-### Bytecode
-While there is bytecode, it isn't executed. Instead it is JIT compiled to make everything Faster.
+
+### Runtime
+
+#### Data Structures
+##### Symbol Table
+A table that contains all symbols of the current runtime system. When a module is initialized, it is given an offset into this table which will be where the symbols added will start at.
 ```rust
-enum Bytecode {
-    Halt,
-    Nop,
-    PushNull,
-	Pop,
-	Dup,
-	Swap,
-	StoreLocal(u8),
-	LoadLocal(u8),
-    CreateObject(usize),
-    SendMessage(usize, usize),
-    StartBlock(usize),
-    GotoBlock(usize),
-    IfBlock(usize, usize),
+struct SymbolTable {
+    table: Vec<Symbol>,
 }
 ```
-|Code             |   Description|       u16         |
-|:----------------|:-------------|:-----------------:|
-|Halt|Suspends execution|0x00|
-|Nop|Does nothing but increment the program counter|0x01|
-|PushNull|Pushes Null onto the Stack |0x02|
-|Pop|Pops a value off of the operand stack|0x03|
-|Dup|Duplicates the top value off of the operand stack and pushes it onto the stack|0x04|
-|Swap|Swaps the top two values of the operand stack|0x05|
-|StoreLocal|Stores the top value off of the operand stack to the specified index|0x06|
-|LoadLocal|Pushes the value at the specified index onto the operand stack|0x07|
-|CreateObject|Creates an object from the specified index into the symbol table and pushes it onto the operand stack|0x08|
-|SendMessage|Creates a message object with the message name being an index into the symbol table and the amount of arguments off of the stack and sends it to the value off the top of the stack.|0x09|
-|StartBlock|Indicates the start of a codeblock for Cranelift|0x0A|
-|GotoBlock|Goes to a block specified by an index|0x0B|
-|IfBlock|Goes to either block depending if the top value on the stack is zero or not.|0x0C|
+##### Object Table
+A table that contains all live objects. Since there is no way of knowing if an object is collectable in Smalllang, it is required for the programmer to provide a way to free objects. The indices into the table are the references used throughout the program.
+```rust
+struct ObjectTable {
+    table: Vec<*mut Object>,
+}
+```
+
+
+#### Functions
