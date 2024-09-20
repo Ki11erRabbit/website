@@ -20,6 +20,13 @@ enableRobotsTXT = true
         name = "Posts"
         weight = 1
     [[menu.main]]
+        identifier = "Programming Languages"
+        url = "/pl/"
+        pre = ""
+        post = ""
+        name = "Programming Languages"
+        weight = 1
+    [[menu.main]]
         identifier = "resume"
         url = "/resume/"
         pre = ""
