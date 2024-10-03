@@ -8,13 +8,13 @@ type = 'post'
 
 
 ### Structures
-
+A positive `isize` represents how many objects fit in the Object's Data.
+A negative `isize` represents how many bytes fit in the Object's data.
 ```rust
 type ObjectRef = usize;
 
 
 struct Object {
-    ref_count: AtomicUsize,
     size: isize,
     class: ObjectRef,
     super_object: ObjectRef,
@@ -22,6 +22,7 @@ struct Object {
 }
 
 struct ObjectData {
+    ref_count: AtomicUsize,
     members: [ObjectRef]
 }
 
@@ -78,5 +79,17 @@ struct Integer {
 
 struct Interpreter {
     // Whatever is needed for the interpreter
+}
+
+struct Process {
+    // Whatever is needed for a Process.
+}
+
+struct StringObject {
+	pointer: *const str,
+}
+
+struct Symbol {
+    // Whatever is needed for a Symbol
 }
 ```
