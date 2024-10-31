@@ -60,7 +60,9 @@ Yes, `while` is a function.
 * Wouldn't this slow down the language?
 Maybe, but I am making the bet that the JVM will optimize out the function call at runtime, making the call free. Even if it doesn't the JVM should be fast enough as is to make it worth it.
 
-### Keywords
+
+### Grammar
+##### Keywords
 These are the keywords of the language. There should be a minimal amount of keywords in order to keep the language small.
 
 ```
@@ -85,6 +87,41 @@ module
 pub
 // External Code Modifier
 extern
+```
+
+### Core Spec
+This defines the functions and types that are built into the language itself and not the standard library
+
+##### Core Functions
+```
+pub fn print(str: String);
+
+pub extern "Java" fn while(cond: f() -> bool, body: f()) """
+    while (cond.run()) {
+        body.run()
+    }
+"""
+
+pub trait Number<Other: Number>: AddOp<Other, Other>, MulOp<Other, Other>, Eq<Other>, Ord<Other> {
+	fn zero() -> Self,
+	fn increment(x: Self) -> Self,
+	fn create<V: Self>() -> V,
+}
+
+pub trait Subtractable<Other: Subtractable, Out: Subtractable>: Number<Other>, SubOp<Other, Out> {
+	fn negate(n: Self) -> Out,
+	fn decrement(n: Self) -> Out,
+}
+
+pub trait Divisible<Other: Divisible, Out: Divisible>: Number<Other>, DivOp<Other, Out>, ModOp<Other, Other> {
+}
+
+
+pub extern "Java" fn range/for(start: Integer, end: Integer, body: f(Integer)) """
+	for (Integer x = start; x.isLessThan(end); x = x.increment()) {
+    	body.run(x);
+	}
+"""
 ```
 
 
