@@ -80,6 +80,7 @@ enum
 // Variable
 let
 mut
+const
 // Module
 import
 module
@@ -87,6 +88,17 @@ module
 pub
 // External Code Modifier
 extern
+// Core Types
+i8
+i16
+i32
+i64
+int
+nat
+f32
+f64
+char
+char32
 ```
 
 ### Core Spec
@@ -102,26 +114,30 @@ pub extern "Java" fn while(cond: f() -> bool, body: f()) """
     }
 """
 
-pub trait Number<Other: Number>: AddOp<Other, Other>, MulOp<Other, Other>, Eq<Other>, Ord<Other> {
-	fn zero() -> Self,
-	fn increment(x: Self) -> Self,
-	fn create<V: Self>() -> V,
-}
 
-pub trait Subtractable<Other: Subtractable, Out: Subtractable>: Number<Other>, SubOp<Other, Out> {
-	fn negate(n: Self) -> Out,
-	fn decrement(n: Self) -> Out,
-}
-
-pub trait Divisible<Other: Divisible, Out: Divisible>: Number<Other>, DivOp<Other, Out>, ModOp<Other, Other> {
-}
-
-
-pub extern "Java" fn range/for(start: Integer, end: Integer, body: f(Integer)) """
-	for (Integer x = start; x.isLessThan(end); x = x.increment()) {
+// There will be one for each numeric type
+pub extern "Java" fn range/for(start: int, end: Int, body: f(int)) """
+	for (Int x = start; x.isLessThan(end); x = x.increment()) {
     	body.run(x);
 	}
 """
+
+// There will be one for each numeric type
+pub extern "Java" fn range/for-while<A>(start: int, end: int, body: f(int)-> Maybe<A> ) -> Maybe<A> """
+	Maybe<A> output = new Nothing<>();
+	for (Int x = start; x.isLessThan(end) && output.isNone(); x = x.increment()) {
+    	output = body.run(x);
+	}
+	return output;
+"""
+
+pub extern "Java" fn repeat(amount: nat, action: f()) """
+	for (Nat x = Nat.zero(); x.isLessThan(amount); x = x.increment()) {
+    	action.run();
+	}
+"""
+
+
 ```
 
 
