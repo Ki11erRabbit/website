@@ -26,9 +26,65 @@ let result = try arr[5];
 
 ##### Types and Generics
 Since we have dependent types, generics and type signatures can now contain expressions. This allows for much more powerful expressiveness and type safety.
-Here is a common idiom where we have a finite set of some natural number. This allows us to create a value
+Here is a common idiom where we have a finite set of some natural number. This allows us to create a natural number that is has an upper bound that is enforced by the typesystem.
 ```
 struct Fin<End: Nat> {
     value: value < End,
 }
 ```
+
+##### Function Calling Syntax
+Functions can be called the traditional way or they may be called with a dot syntax.
+The dot syntax will work if the type of the first parameter and the expression on the left side of the dot matches. This should allow for discoverability of functions.
+Parenthesese may also be dropped for consiseness.
+
+```
+"Hello, World!".print
+
+```
+
+##### Closure/Lambda Syntactic sugar.
+Taking an idea from Koka, a closure may be put outside of the closing parenthesis. This makes the nesting of symbols reduced, improving readability.
+Another idea from Koka, is that if a closure doesn't take any parameters then the parameter list may be excluded for readability.
+This should also allow for generalizing and abstracting processies making the language much smaller and more maintainable.
+```
+[1,2,3,4].map() |x| x + 1;
+
+let x = 2;
+while {x < 10} {
+    x += 1;
+};
+
+```
+Yes, `while` is a function.
+* Wouldn't this slow down the language?
+Maybe, but I am making the bet that the JVM will optimize out the function call at runtime, making the call free. Even if it doesn't the JVM should be fast enough as is to make it worth it.
+
+### Keywords
+These are the keywords of the language. There should be a minimal amount of keywords in order to keep the language small.
+
+```
+// Control Flow
+if
+else
+match
+fn
+return
+break
+continue
+// Data
+struct
+enum
+// Variable
+let
+mut
+// Module
+import
+module
+// Visibility Modifier
+pub
+// External Code Modifier
+extern
+```
+
+
