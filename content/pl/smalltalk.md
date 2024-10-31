@@ -38,23 +38,26 @@ struct ObjectData {
 * Integer
 * Interpreter
 * Process
+* Stack
+* StackFrame
 * String
 * Symbol
 
 ```rust
 
 struct Class {
+    symbol_to_method: HashMap<Symbol, usize>,
     methods: [Block],
 }
 
 enum BlockBody {
     Native,
-    Bytecode,
+    Bytecode(ByteArray),
 }
 
 
 struct Block {
-    body: [BlockBody]
+    body: Native,
 }
 
 struct ByteArray {
@@ -78,18 +81,29 @@ struct Integer {
 }
 
 struct Interpreter {
-    // Whatever is needed for the interpreter
+    stack: Stack,
 }
 
 struct Process {
-    // Whatever is needed for a Process.
+    interpreter: Interpreter,
+    future: Arc<dyn BoxedFuture>,
+}
+
+struct Stack {
+    frames: StackFrame,
+}
+
+struct StackFrame {
+    current_code: ByteArray,
+    current_code_index: usize
+    operand_stack: Vec<Object>,
 }
 
 struct StringObject {
-	pointer: *const str,
+    pointer: *const str,
 }
 
 struct Symbol {
-    // Whatever is needed for a Symbol
+    pointer: *const str,
 }
 ```
