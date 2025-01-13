@@ -13,16 +13,10 @@ Strong Brew is a general purpose programming language with gradual dependent typ
 Gradual dependent types should make the language be able to as expressive as possible while maintaining ease of use.
 
 ### Syntax
-Syntax will be mostly Rust-like but here is some of the changes to the language.
+Syntax will be mostly Rust and Koka-like but here is some of the changes to the language.
 
-##### Try keyword
-Try is a new keyword that allows you to try an operation and convert any errors into a Result type.
-It is similar to try/catch in other languages but the difference being that it converts an error (exception) into a value that can be used.
-
-```
-let arr = [1,2,3,4];
-let result = try arr[5];
-```
+##### Optional Semicolons
+Semicolons will be optional in the language. To separate expressions use a newline instead.
 
 ##### Types and Generics
 Since we have dependent types, generics and type signatures can now contain expressions. This allows for much more powerful expressiveness and type safety.
@@ -53,7 +47,7 @@ This should also allow for generalizing and abstracting processies making the la
 let x = 2;
 while {x < 10} {
     x += 1;
-};
+}
 
 ```
 Yes, `while` is a function.
@@ -98,11 +92,40 @@ nat
 f32
 f64
 char
-char32
+bool
+// Constants
+True
+False
 ```
 
 ### Core Spec
-This defines the functions and types that are built into the language itself and not the standard library
+This defines the features, functions, and types that are built into the language itself and not the standard library.
+
+
+##### Features
+* Mutability and Immutability
+* Algebraic Types
+* Higher Order Functions and Closures
+* Implicit Parameters
+* Overloaded Operators and Functions
+* Syntactic Sugar that minimizes the core language
+* Syntactic Sugar that maximizes discoverability
+
+##### Operators
+* Add `+`
+* Subtract `-`
+* Multiply `*`
+* Divide `/`
+* Modulo `%`
+* Not `!`
+* Logical Or `||`
+* Logical And `&&`
+* Equals `==`
+* Not Equals `!=`
+* Index `[]`
+* Concatenate `++`
+* Try `?`
+* Assignment `=`
 
 ##### Core Functions
 ```
@@ -114,7 +137,6 @@ pub extern "Java" fn while(cond: f() -> bool, body: f()) """
     }
 """
 
-
 // There will be one for each numeric type
 pub extern "Java" fn range/for(start: int, end: Int, body: f(int)) """
 	for (Int x = start; x.isLessThan(end); x = x.increment()) {
@@ -125,19 +147,52 @@ pub extern "Java" fn range/for(start: int, end: Int, body: f(int)) """
 // There will be one for each numeric type
 pub extern "Java" fn range/for-while<A>(start: int, end: int, body: f(int)-> Maybe<A> ) -> Maybe<A> """
 	Maybe<A> output = new Nothing<>();
-	for (Int x = start; x.isLessThan(end) && output.isNone(); x = x.increment()) {
+	for (Int x = start; x.isLessThan(end) && output.isNothing(); x = x.increment()) {
     	output = body.run(x);
 	}
 	return output;
 """
 
+// There will be one for each numeric type
 pub extern "Java" fn repeat(amount: nat, action: f()) """
 	for (Nat x = Nat.zero(); x.isLessThan(amount); x = x.increment()) {
     	action.run();
 	}
 """
 
+pub fn cmp/(==)<A>(x: A, y: A, ?cmp : f(A, A) -> Order) -> bool {
+    match cmp(x, y) {
+		Order::Eq -> True,
+		_ -> False,
+    }
+}
 
+pub fn (!=)<A>(x: A, y: A, ?(==): f(A, A) -> bool) -> bool {
+    !(x == y)
+}
+
+pub fn (<)<A>(x: A, y:A, ?cmp: f(a, a) -> Order) -> bool
+pub fn (<=)<A>(x: A, y:A, ?cmp: f(a, a) -> Order) -> bool
+pub fn (>)<A>(x: A, y:A, ?cmp: f(a, a) -> Order) -> bool
+pub fn (>=)<A>(x: A, y:A, ?cmp: f(a, a) -> Order) -> bool
 ```
 
+##### Core Bool
+```
+pub fn bool/(!)(b: bool) -> bool
+
+pub fn bool/(&&)(x: bool, y: bool) -> bool
+pub fn bool/(||)(x: bool, y: bool) -> bool
+pub fn bool/not(x: bool) -> bool
+```
+
+##### Core Vector
+This uses a JVM array under the hood to provide a constant time indexable list.
+```
+pub struct Vector {
+    array: JavaArray,
+    pub length: Nat,
+}
+
+```
 
