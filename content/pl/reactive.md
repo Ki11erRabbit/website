@@ -22,3 +22,92 @@ Functions/Closures may be passed around as parameters. This is to allow for call
 
 In order to facilitate stateful computations. Functions are given two types of stateful variables, one for the function itself and one that may be shared with 1 or more functions. The one that is shared is protected with a Read Write Lock in order to prevent race conditions.
 The shared state is to allow for stateful algorithms that are split into multiple functions because they rely on external information to proceed
+
+
+## Structures
+These all use Rust-like syntax
+
+```rust
+type Symbol = usize; // An index into a symbol table
+
+type Index = usize; // Represents and index into a table
+type VTableIndex = usize; // Represents an index into a table of VTables
+
+enum TypeTag {
+    U8,
+    U16,
+    U32,
+    U64,
+    I8,
+    I16,
+    I32,
+    I64,
+    F32,
+    F64,
+    Char, //U32
+    Object, // u64
+    RawStr(Index), // Index into String Table
+}
+
+```
+
+
+#### Class
+```rust
+struct Class {
+    name: Symbol,
+    parents: Vec<Symbol>,
+    vtables: Vec<VTableIndex>, // Mirrors parents
+    members: Vec<MemberInfo>,
+    signals: Vec<SignalInfo>,
+}
+
+struct VTable {
+    symbol_mapper: Map<Symbol, Index>,
+    table: [VirtFunc]
+}
+
+struct VirtFunc {
+    name: Symbol,
+    value: VirtFuncValue,
+    responds_to: Option<Symbol>,
+    arguments: Vec<TypeTag>,
+    ReturnType: TypeTag
+}
+
+enum VirtFuncValue {
+    Builtin,
+    Ast,
+    Bytecode,
+    Compiled,
+}
+
+struct MemberInfo {
+    type_tag: TypeTag,
+    name: Symbol,
+}
+
+struct SingalInfo {
+    name: Symbol,
+    static: bool,
+    arguments: Vec<TypeTag>,
+}
+
+```
+
+#### Object
+```rust
+struct Object {
+    class: Symbol,
+    data: [u8], // Binary data
+}
+```
+
+#### Bytecode
+```rust
+
+enum Bytecode {
+    InvokeVirt(Symbol, Symbol), // Class Name, Function Name
+}
+    
+```
