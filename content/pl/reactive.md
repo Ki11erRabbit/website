@@ -30,6 +30,7 @@ These all use Rust-like syntax
 ```rust
 type Symbol = usize; // An index into a symbol table
 
+type Reference = usize;
 type Index = usize; // Represents and index into a table
 type VTableIndex = usize; // Represents an index into a table of VTables
 
@@ -56,8 +57,8 @@ enum TypeTag {
 ```rust
 struct Class {
     name: Symbol,
-    parents: Vec<Symbol>,
-    vtables: Vec<VTableIndex>, // Mirrors parents
+    parents: Vec<Symbol>, // Is mirrored in Object.parent_objects
+    vtables: Map<Symbol, VTableIndex>, // Key is parent name or class name, value is the vtable for that object
     members: Vec<MemberInfo>,
     signals: Vec<SignalInfo>,
 }
@@ -77,8 +78,6 @@ struct VirtFunc {
 
 enum VirtFuncValue {
     Builtin,
-    Ast,
-    Bytecode,
     Compiled,
 }
 
@@ -87,7 +86,7 @@ struct MemberInfo {
     name: Symbol,
 }
 
-struct SingalInfo {
+struct SignalInfo {
     name: Symbol,
     static: bool,
     arguments: Vec<TypeTag>,
@@ -99,6 +98,8 @@ struct SingalInfo {
 ```rust
 struct Object {
     class: Symbol,
+    parent_objects_size: usize,
+    parent_objects: [Reference], // Mirrors Class.parents
     data: [u8], // Binary data
 }
 ```
