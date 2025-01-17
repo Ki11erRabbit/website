@@ -100,6 +100,7 @@ struct Object {
     class: Symbol,
     parent_objects_size: usize,
     parent_objects: [Reference], // Mirrors Class.parents
+    children: Vec<Reference>,
     data: [u8], // Binary data
 }
 ```
