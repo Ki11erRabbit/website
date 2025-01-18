@@ -78,6 +78,7 @@ struct VirtFunc {
 
 enum VirtFuncValue {
     Builtin,
+    Bytecode,
     Compiled,
 }
 
@@ -108,8 +109,65 @@ struct Object {
 #### Bytecode
 ```rust
 
+type TypeTag = u8;
+type BlockId = usize;
+
 enum Bytecode {
+    Nop,
+    Breakpoint,
+    LoadU8(u8),
+    LoadU16(u16),
+    LoadU32(u32),
+    LoadU64(u64),
+    LoadI8(i8),
+    LoadI16(i16),
+    LoadI32(i32),
+    LoadI64(i64),
+    LoadF32(f32),
+    LoadF64(f64),
+    Pop,
+    Dup,
+    Swap,
+    StoreLocal(u8)
+    LoadLocal(u8)
+    StoreArgument(u8)
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+    And,
+    Or,
+    Xor,
+    Not,
+    AShl,
+    LShl,
+    ASr,
+    LShr,
+    Neg,
+    Equal,
+    NotEqual,
+    Greater,
+    Less,
+    GreaterOrEqual,
+    LessOrEqual,
+    Convert(TypeTag),
+    BinaryConvert(TypeTag),
+    CreateArray(TypeTag),
+    ArrayGet(TypeTag),
+    ArraySet(TypeTag),
+    GetField(Symbol, u64),
+    SetField(Symbol, u64),
+    IsA(Symbol)
     InvokeVirt(Symbol, Symbol), // Class Name, Function Name
+    InvokeVirtTail(Symbol, Symbol), // Class Name, Function Name
+    Return,
+    ReturnVoid,
+    StartBlock(usize),
+    Goto(BlockId), // Offset to next block from current block
+    If(BlockId, BlockId),
+    Switch(Vec<BlockId>, BlockId),
+    
 }
     
 ```
