@@ -58,7 +58,7 @@ enum TypeTag {
 struct Class {
     name: Symbol,
     parents: Vec<Symbol>, // Is mirrored in Object.parent_objects
-    vtables: Map<Symbol, VTableIndex>, // Key is parent name or class name, value is the vtable for that object
+    vtables: Map<(Symbol, Symbol), VTableIndex>, // Key is (Starting Parent, Particular Child), value is the vtable for that object. This allows for calling parent methods via super while still overloading parent vtables
     members: Vec<MemberInfo>,
     signals: Vec<SignalInfo>,
 }
@@ -100,8 +100,9 @@ struct SignalInfo {
 struct Object {
     class: Symbol,
     parent_objects_size: usize,
-    parent_objects: [Reference], // Mirrors Class.parents
-    children: Vec<Reference>,
+    parent_objects: *mut [Reference], // Mirrors Class.parents
+    children_size: usize,
+    children: *mut[Reference],
     data: [u8], // Binary data
 }
 ```
@@ -136,13 +137,18 @@ enum Bytecode {
     Mul,
     Div,
     Mod,
+    SatAdd,
+    SatSub,
+    SatMul,
+    SatDiv,
+    SatMod,
     And,
     Or,
     Xor,
     Not,
     AShl,
     LShl,
-    ASr,
+    AShr,
     LShr,
     Neg,
     Equal,
@@ -156,11 +162,15 @@ enum Bytecode {
     CreateArray(TypeTag),
     ArrayGet(TypeTag),
     ArraySet(TypeTag),
-    GetField(Symbol, u64),
-    SetField(Symbol, u64),
-    IsA(Symbol)
-    InvokeVirt(Symbol, Symbol), // Class Name, Function Name
-    InvokeVirtTail(Symbol, Symbol), // Class Name, Function Name
+    NewObject(Symbol),
+    GetField(Symbol, Symbol, usize), // Class name, Class name, Member. The second Class name is to allow for selecting the particular parent to access the field.
+    SetField(Symbol, Symbol, usize), // Class name, Class name, Member. The second Class name is to allow for selecting the particular parent to access the field.
+    IsA(Symbol),
+    InvokeVirt(Symbol, Symbol, Symbol), // Class Name, Class Name, Function Name. The two class names allow for calling super methods as well as overridden super methods
+    InvokeVirtTail(Symbol, Symbol, Symbol), // Class Name, Class Name, Function Name. The two class names allow for calling super methods as well as overridden super methods
+    EmitSignal(Symbol, Symbol), // Class Name, Signal Name
+    EmitStaticSignal(Symbol, Symbol), // Class Name, Signal Name
+    ConnectSignal(Symbol, Symbol, Symbol, Symbol), // Signal Name, Class Name, Class Name, Method Name. The top two stack values are used for this. The top object is connected to the bottom object's signal via the 2nd and 3rd Class Names + the Method Name
     Return,
     ReturnVoid,
     StartBlock(usize),
