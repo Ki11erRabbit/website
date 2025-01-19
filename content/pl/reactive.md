@@ -10,18 +10,21 @@ type = 'post'
 
 
 ## Design
+This language's design is borrowed from Godot. The main idea taken from Godot is that all objects are nodes on a graph. This means that you can change/add functionality by adding new nodes to other nodes.
+To take advantage of this design, objects may arbitrarily add or remove object from themselves. Objects attached this way will be updated every heartbeat.
 
-This language will be structured around a priority queue and a threadpool.
-The priority queue will hold messages that get consumed every tick. The tick is the heartbeat of the whole system. Each tick will release a "tick" message that may be listened for.
-All messages currently in the queue will be processed in this tick. Any new messages will be put into a buffer that will be placed into the priority queue on the next tick.
-Each message will be sent to every function that will listen for this message. The listeners are known statically.
-Functions are called in a threadpool for speed. Messages will only be processed as there are threads. Therefore if there are only 4 threads and 5 listeners of a message, then the extra will be processed the second a thread is available.
+The heartbeat is a message that all objects attached to the main object will respond to via the `tick` method. This method takes a f64 of the amount of seconds elapsed since the last heartbeat. This allows for time dependent code to be processed, without the need of sleep.
+Objects will also have a `ready` method that takes zero arguments that is called when an object is attached to to another object. The main's ready method is the first method called on VM startup.
 
-All messages may have zero or more values associated with the message. Functions that respond to the message must have arguments that match the message values.
-Functions/Closures may be passed around as parameters. This is to allow for callbacks that may be needed for algorithms that require external information from a subsystem.
-
-In order to facilitate stateful computations. Functions are given two types of stateful variables, one for the function itself and one that may be shared with 1 or more functions. The one that is shared is protected with a Read Write Lock in order to prevent race conditions.
-The shared state is to allow for stateful algorithms that are split into multiple functions because they rely on external information to proceed
+There are 4 different ways of calling a method.
+1. Normal Method calls
+    * These are pretty much methods from Java and they are synchronous, meaning that calling a method blocks the current method until it is done.
+2. Signals
+    * These are like signals from Godot. They are asynchronous and call methods on objects that have been connected to to the object that emitted the signal.
+3. Static Signals
+    * These are a special type of signals. They are connected at link time/compile time and all of the objects that have methods that are listening for the signal will have their methods called.
+4. Remote Proceedure calls
+    * These are a work in progress and as such, don't have any documentation
 
 
 ## Structures
@@ -54,6 +57,7 @@ enum TypeTag {
 
 
 #### Class
+##### VM Structure
 ```rust
 struct Class {
     name: Symbol,
@@ -94,6 +98,48 @@ struct SignalInfo {
 }
 
 ```
+
+##### File Structure
+```rust
+type StringIndex = u64;
+type BytecodeIndex = u64;
+
+
+struct ClassFile {
+    magic: u8,
+    major_ver: u8,
+    minor_ver: u8,
+    patch_ver: u8,
+    name: StringIndex,
+    parent_count: u8,
+    parent_names: [StringIndex; parent_count],
+    vtable_size: u64,
+    vtables: [VTable; vtable_size],
+    members_size: u64,
+    members_names: [StringIndex; members_size],
+    signals_count: u64,
+    signals: [Signal; signals_count],
+    bytecode_table: [BytecodeEntry],
+    string_table: [StringEntry]
+}
+
+struct VTable {
+    size: u64,
+    names_bytecode: [(StringIndex, BytecodeIndex); size],
+}
+
+struct BytecodeEntry {
+    size: u64,
+    code: [u8],
+}
+
+struct StringEntry {
+    size: u64,
+    data: [u8],
+}
+
+```
+
 
 #### Object
 ```rust
