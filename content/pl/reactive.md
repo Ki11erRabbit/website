@@ -26,6 +26,28 @@ There are 4 different ways of calling a method.
 4. Remote Proceedure calls
     * These are a work in progress and as such, don't have any documentation
 
+### Design Implementation
+There will be a max heap priority queue that dictates which messages will be handled first. Tick (the heartbeat) always comes first, and as such, will not be in the queue.
+Messages are added to a lockless queue every heartbeat and then dumped into the priority queue during the processing of the tick message. The priority is dictated by a graph coloring algorithm to ensure thread safety.
+The way it should work is that is will order the messages based off of availablity. Thread safety is preserved by ensuring that an object is only in one thread at a time. This means that the order of messages shouldn't matter.
+
+There will be 2 lockless queues. This ensures that we can add messages while processing tick and message order. The queues should be of a sufficient size to handle the adding an unknown number of messages
+
+#### Garbage Collection
+We can exploit the fact that there is a pause time in the running of the virtual machine.
+This means that all live memory only exists in either an object's children, one of an object's members, or in a message.
+A garbage collection could occur after a certain amount of ticks and before message processing.
+Since we have a threadpool, we can do a threaded divide and conquer algorithm to find all live memory.
+
+#### Object Methods
+These are the methods on the base object. All object types inherit from object.
+| Method         | Description                                                                  | Signature           |
+|:---------------|:-----------------------------------------------------------------------------|:-------------------:|
+|`tick`          |Incremental processing method, called each heartbeat.                         |(f64) -> void        |
+|`ready`         |Initialization method, called when an object is attached to a parent object.  |() -> void           |
+|`upcast`        |Returns the object as a different type if it can be, otherwise raise an error.|\[T\]() -> T         |
+|`try-upcast`    |Returns the object as a different type if it can be as an Option type.        |\[T\]() -> Option[T] |
+
 
 ## Structures
 These all use Rust-like syntax
