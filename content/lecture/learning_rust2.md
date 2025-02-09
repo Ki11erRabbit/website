@@ -83,7 +83,7 @@ Much like Vecs and slices you can use a `&String` in functions that take a `&str
 
 To create a String, you can use the `to_string` method implemented on most types, `String::from` as seen above, or as the result of the `format!` macro.
 
-## Enums and Matching
+## Enums, Matching, and Error Handling
 ### Enums
 Enums can be one of two kind in Rust, either C-like enumerations or what are called Tagged Unions.
 ```rust
@@ -110,18 +110,24 @@ enum BinaryTree {
 
 ```
 
-A useful enum that is blessed by the Rust's compiler is called `Option<T>`.
-It is defined as so:
+Two useful enums that is blessed by the Rust's compiler is called `Option<T>`.
+Are defined as so:
 ```rust
 pub enum Option<T> {
     Some(T),
 	None,
 }
+
+pub enum Result<T, E> {
+    Ok(T),
+    Err(T),
+}
 ```
-It is blessed because of how you can construct/access its variants among some other things that will be talked about later.
-This type is primarily used in situations where a function could fail. This stands in the place of null that most languages have.
-In order to access the data in an Option, you will have to handle the error state in some way. The easiest way is to use `unwrap` which will
-convert the error state into an uncatchable exception. However, you should never call this unless you either know that it will be a Some,
+They are blessed because of how you can construct/access its variants among some other things that will be talked about later.
+These types are primarily used in situations where a function could fail. Option stands in the place of null that most languages have.
+Result is useful for when you want to provide error information.
+In order to access the data in an Option or Result, you will have to handle the error state in some way. The easiest way is to use `unwrap` which will
+convert the error state into an uncatchable exception. However, you should never call this unless you either know that it will be a Some or Ok,
 you are prototyping, or have reached a state that is impossible to recover from (in this case you should use `expect` and provide an error message).
 ```rust
 // How you normally construct an enum
@@ -153,6 +159,7 @@ Cool right?
 ### Matching
 To make accessing enums, structs, and tuples easy, Rust has the the concept called Pattern Matching.
 Most people are familiar with the ordering of data and the equality of data. Rust has the high level concept of the shape of data.
+Rust also enforces that all variants must be handled. To do a catch all, use an underscore (`_`) or a variable name (`x`) as one of the branches.
 Here is how you can match on the various datatypes in Rust:
 ```rust
 struct Foo {
@@ -188,6 +195,41 @@ match tuple {
     (3, "hello") => todo!(),// We can also match on strings
     (3, _) => todo!(),// Here we ignore the string part
 	_ => todo!(), // Here we match on any input, ignoring the tuple. We can also put in a variable instead to get access to the tuple.
+}
+```
+
+### Error Handling
+Most useful programs will encounter at least some form of error at some point. 
+Especially if they interact with the operating system in any way.
+There are 2 ways of doing errors in Rust. Using an error type like `Option<T>` or `Result<T,E>` or panicking.
+
+#### Panicking
+Panicking is Rust's way of crashing your thread and freeing up resources. 
+It is an uncatchable exception.
+These should be used whenever your program enters into a state that it cannot recover from.
+The easiest way to panic is by calling the `panic!` macro. It can do message formating just like `println!` and `format!`.
+There are also some useful macros that cause a panic but tell the compiler useful things.
+The `todo!` macro tells the compiler that you aren't done implementing the code and it will disable some errors. If you hit a todo then it will panic.
+
+Another useful panic macro is the `unreachable!` macro. This tells the compiler that this branch will not be reached under any means.
+It is great when there is a state that you know is invalid, and if you are wrong, then you get a panic.
+
+#### Option and Result
+These types are used everywhere in Rust to handle errors. Doing a match on all of these types can get tedious fast.
+Panicking is most likely the wrong thing to do. Luckily Rust has a way of propagating Options and Results through the try operator `?`.
+Try allows the caller to pass the error state to their caller to handle it. This acts like a structured try/catch.
+
+Doesn't this mean that main will have to handle every error state?
+
+No, you can simply write main this way:
+```rust
+use std::io;
+
+fn main() -> io::Result<()> {
+    let mut buffer = String::new();
+    
+    io::stdin().read_line(&mut buffer)?;
+    Ok(())
 }
 ```
 
@@ -267,3 +309,123 @@ fn main() {
 
 ```
 
+## Traits
+Traits are a lot like interfaces but are much more powerful. You can define traits on any type that follows what is called the orphan rule.
+The orphan rule states that you can implement a trait on a type if either the crate defines the type or the crate defines the trait.
+This makes it useful for following the the Open Close rule of software engineering.
+Traits are declared as such:
+```rust
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+```
+
+Here is how to implement a trait:
+```rust
+pub struct NewsArticle {
+    pub headline: String,
+    pub location: String,
+    pub author: String,
+    pub content: String,
+}
+
+impl Summary for NewsArticle {
+    fn summarize(&self) -> String {
+        format!("{}, by {} ({})", self.headline, self.author, self.location)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+    pub content: String,
+    pub reply: bool,
+    pub retweet: bool,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.username, self.content)
+    }
+}
+```
+
+Sometimes in our code, we don't care what the type is, we just care that it implements an interface.
+In Rust we have what are called existential types. They allow us to essentially state:
+
+There exists a type, such that it has an interface xyz.
+
+There are two ways of expressing such a constraint. 
+One way is with the `dyn` keyword. This keyword requires that we pass the argument as a reference type.
+```rust
+pub fn notify(item: &dyn Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+```
+This can cause some problems though when trying to return a closure/lambda from a function.
+To remedy this issue, you can use `impl` instead of `dyn` and in this case you don't need a reference.
+```rust
+pub fn notify(item: impl Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+pub fn add_n(n: i64) -> impl Fn(i64) -> i64 {
+    |x: i64| {
+        x + n
+    }
+}
+```
+
+So why should I ever use `dyn` then if I can just use `impl`?
+
+Impl isn't always existential and under the hood the compiler does know the actual type that is being passed in.
+I say use `dyn` over `impl` unless you can't use `dyn`.
+
+## Generics
+Rust supports generics or parametric polymorphism.
+This allows you to share code across different types.
+Here is how you use generics for your functions datatypes, and methods.
+
+```rust
+fn largest<T>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+
+    for item in list {
+        if item > largest {
+            largest = item;
+        }
+    }
+
+    largest
+}
+
+pub struct Point<X, Y> {
+    x: X,
+    y: Y,
+}
+
+impl<X, Y> Point<X, Y> {
+    fn x(&self) -> &X {
+        &self.x
+    }
+}
+```
+
+You can also use traits in generics as constraints.
+```rust
+pub fn print<S: AsRef<str>>(string: S) {
+    print!("{}", string.as_ref());
+}
+
+```
+Sometimes specifying constraints this way can get long as such:
+```rust
+fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32;
+```
+You can also use a `where` clause when it gets too long:
+```rust
+fn some_function(t: &T, u: &U) -> i32 
+where 
+    T: Display + Clone,
+    U: Clone + Debug
+{ todo!() }
+```
