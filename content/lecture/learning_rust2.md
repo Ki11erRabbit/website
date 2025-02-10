@@ -43,15 +43,39 @@ v.extend_from_slice(&[1, 2, 3, 4]);
 if v.len() == 0 {
     println!("Empty Vec");
 }
+```
+
+#### Iterators
+Rust likes to use iterators to provide a powerful functional interface on data.
+The easiest ways to get an iterator is to call one of these functions, `iter`, `iter_mut`, or `into_iter`.
+The last one takes ownership of the vector and turns it into a iterator type.
+Iterators have a whole bunch of useful methods to transform the stream of data.
+Below is an example of using `map` to alter the data and collect to convert the iterator back into a vector.
+```rust
+
 
 v = v.into_iter().map(|x| x + 1).collect::<Vec<_>>();
+```
 
+It should be noted that when passing a vector into a for loop, it takes ownership of the vector.
+The reason being that it will call `into_iter` on whatever is passed into the loop.
+```rust
 for i in v {// Note that this takes ownership of the Vec
     println!("{i}");
 }
-// To borrow the contents of the Vec, user iter or iter_mut
-
+// And it is the same as doing this
+for i in v.into_iter() {
+}
+```
+If we want to not lose ownership of the vector, we can call the `iter` or `iter_mut` method to get a borrow on the data.
+We can do the same by passing it in by reference.
+```rust
 for i in v.iter() {
+    println!("{i}");
+}
+
+// Or access it via reference
+for i in &v {
     println!("{i}");
 }
 ```
@@ -82,6 +106,12 @@ let char_count = String::from("Hello, 世界").chars().count();
 Much like Vecs and slices you can use a `&String` in functions that take a `&str`.
 
 To create a String, you can use the `to_string` method implemented on most types, `String::from` as seen above, or as the result of the `format!` macro.
+```rust
+let one_string = 4.to_string();
+let red_string = String::from("red string");
+let blue_string = format!("{}", "blue);// Works the same as println!
+
+```
 
 ## Enums, Matching, and Error Handling
 ### Enums
@@ -123,9 +153,33 @@ pub enum Result<T, E> {
     Err(T),
 }
 ```
-They are blessed because of how you can construct/access its variants among some other things that will be talked about later.
+They are blessed because how they come with the standard library, how the compiler treats them, and how you can construct/access its variants.
 These types are primarily used in situations where a function could fail. Option stands in the place of null that most languages have.
+
+Here is an example of a function in C called `atoi` that has some error handling issues.
+```c
+int atoi(const char* nptr);
+
+```
+```
+RETURN VALUE
+       The converted value or 0 on error.
+```
+What if the value of `nptr` is `"0"`?
+
+We would have to check the string every time to know if there was an error or not. 
+Rust provides `Option<T>` to solve this problem. 
+By separating error states into their own values, we can now write a better `atoi` (maybe even with a better name).
+```rust
+pub fn atoi(number_str: &str) -> Option<i32>;
+```
+
 Result is useful for when you want to provide error information.
+To improve the above example, we can change it to be a result to now have more error information.
+```rust
+pub fn atoi(number_str: &str) -> Result<i32, String>;
+```
+
 In order to access the data in an Option or Result, you will have to handle the error state in some way. The easiest way is to use `unwrap` which will
 convert the error state into an uncatchable exception. However, you should never call this unless you either know that it will be a Some or Ok,
 you are prototyping, or have reached a state that is impossible to recover from (in this case you should use `expect` and provide an error message).
