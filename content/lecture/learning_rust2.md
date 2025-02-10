@@ -230,7 +230,9 @@ match Foo::new(10) {
 
 // matching enums
 let Some(x) = function_that_can_fail() else {
-	// To match on enum variants in a let binding, you either have to provide a default value or in this case, throw an uncatchable exception.
+	// To match on enum variants in a let binding, 
+    // you either have to provide a default value or in this case,
+    // throw an uncatchable exception.
     panic!("function failed");
 };
 
@@ -248,7 +250,9 @@ let (x, y) = (42, "hello world")
 match tuple {
     (3, "hello") => todo!(),// We can also match on strings
     (3, _) => todo!(),// Here we ignore the string part
-	_ => todo!(), // Here we match on any input, ignoring the tuple. We can also put in a variable instead to get access to the tuple.
+	_ => todo!(), /* Here we match on any input, ignoring the tuple. 
+                     We can also put in a variable instead to get access
+                     to the tuple. */
 }
 ```
 
@@ -365,16 +369,23 @@ fn main() {
 
 ## Traits
 Traits are a lot like interfaces but are much more powerful. You can define traits on any type that follows what is called the orphan rule.
-The orphan rule states that you can implement a trait on a type if either the crate defines the type or the crate defines the trait.
-This makes it useful for following the the Open Close rule of software engineering.
+
+**The orphan rule states that you can implement a trait on a type if either the crate defines the type or the crate defines the trait.**
+
+This makes it useful for following the the Open Close principle of software engineering.
+
+*Software entities should be open for extension, but closed for modification.*
+
+
 Traits are declared as such:
 ```rust
 pub trait Summary {
     fn summarize(&self) -> String;
+    // You can put more methods here.
 }
 ```
 
-Here is how to implement a trait:
+Here is how to implement a trait on the two structs `NewsArticle` and `Tweet`:
 ```rust
 pub struct NewsArticle {
     pub headline: String,
@@ -383,6 +394,7 @@ pub struct NewsArticle {
     pub content: String,
 }
 
+// Implementation Here
 impl Summary for NewsArticle {
     fn summarize(&self) -> String {
         format!("{}, by {} ({})", self.headline, self.author, self.location)
@@ -396,6 +408,7 @@ pub struct Tweet {
     pub retweet: bool,
 }
 
+// Implementation Here
 impl Summary for Tweet {
     fn summarize(&self) -> String {
         format!("{}: {}", self.username, self.content)
@@ -404,14 +417,33 @@ impl Summary for Tweet {
 ```
 
 Sometimes in our code, we don't care what the type is, we just care that it implements an interface.
-In Rust we have what are called existential types. They allow us to essentially state:
+An example of this is how in Java we use `List<T>` instead of `ArrayList<T>` or `LinkedList<T>` when defining the interface for lists.
 
-There exists a type, such that it has an interface xyz.
+In Rust we have what are called existential types. They allow us to state:
 
-There are two ways of expressing such a constraint. 
+*There exists a type, such that it has a trait interface xyz.*
+
+This is powerful because we can now pass in a mixture of different types of data that all share the same interface.
+```
+let mut summaries: Vec<Box<dyn Summary>> = Vec::new();
+summaries.push(Box::new(NewsArticle::new()));
+summaries.push(Box::new(Tweet::new()));
+
+for summary in summaries {
+    println!("{}", summary.summarize());
+}
+
+```
+
+The compiler has two ways of expressing this constraint.
 One way is with the `dyn` keyword. This keyword requires that we pass the argument as a reference type.
 ```rust
 pub fn notify(item: &dyn Summary) {
+    println!("Breaking news! {}", item.summarize());
+}
+
+// You can also used owned references like Box<T> as so:
+pub fn notify(item: Box<dyn Summary>) {
     println!("Breaking news! {}", item.summarize());
 }
 ```
@@ -437,6 +469,8 @@ I say use `dyn` over `impl` unless you can't use `dyn`.
 ## Generics
 Rust supports generics or parametric polymorphism.
 This allows you to share code across different types.
+To add generics, you wrap a capitalized variable name (or often single letter) in angle brackets. 
+Then that goes at the end of the name of the function, struct, or enum.
 Here is how you use generics for your functions datatypes, and methods.
 
 ```rust
@@ -465,13 +499,14 @@ impl<X, Y> Point<X, Y> {
 ```
 
 You can also use traits in generics as constraints.
+You add a colon after the name of the generic and put in a plus separated list of traits.
 ```rust
 pub fn print<S: AsRef<str>>(string: S) {
     print!("{}", string.as_ref());
 }
 
 ```
-Sometimes specifying constraints this way can get long as such:
+Sometimes specifying constraints this way can get long as shown below:
 ```rust
 fn some_function<T: Display + Clone, U: Clone + Debug>(t: &T, u: &U) -> i32;
 ```
