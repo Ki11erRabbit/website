@@ -6,7 +6,7 @@ type = 'post'
 
 This is adapted from the BYU CS 465 website which can be found [here](https://cs465.zappala.org/winter2025/notes/learning-rust-2/)
 
-I will be going in a slightly different order than the ubove webpage, but I think it will be infomative to all.
+I will be going in a slightly different order than the above webpage, but I think it will be infomative to all.
 
 ## Owned vs Unowned Values
 Due to Rust's ownership rules, there are many types that represent these rules. Here are a few of them.
@@ -14,8 +14,8 @@ Due to Rust's ownership rules, there are many types that represent these rules. 
 |Name              |Unowned| Owned  |
 |------------------|-------|--------|
 |Reference (Borrow)|`&T`   |`Box<T>`,`Rc<T>`,`Arc<T>`|
-|Slice (Array)     |`&[T]` or [T;n] |`Vec<T>`|
-|UTF-8 Character String|`&str` |String  |
+|Slice (Array)     |`&[T]` or `[T;n]` |`Vec<T>`|
+|UTF-8 Character String|`&str` |`String`  |
 
 Many owned values contain heap allocated values but will automatically clean up their resources when they go out of scope.
 
@@ -110,7 +110,7 @@ enum BinaryTree {
 
 ```
 
-Two useful enums that is blessed by the Rust's compiler is called `Option<T>`.
+Two useful enums that is blessed by the Rust's compiler are called `Option<T>` and `Result<T,E>`.
 Are defined as so:
 ```rust
 pub enum Option<T> {
