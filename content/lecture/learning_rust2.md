@@ -143,7 +143,7 @@ enum BinaryTree {
 ```
 
 Two useful enums that is blessed by the Rust's compiler are called `Option<T>` and `Result<T,E>`.
-Are defined as so:
+They are defined as so:
 ```rust
 pub enum Option<T> {
     Some(T),
@@ -426,7 +426,7 @@ In Rust we have what are called existential types. They allow us to state:
 *There exists a type, such that it has a trait interface xyz.*
 
 This is powerful because we can now pass in a mixture of different types of data that all share the same interface.
-```
+```rust
 let mut summaries: Vec<Box<dyn Summary>> = Vec::new();
 summaries.push(Box::new(NewsArticle::new()));
 summaries.push(Box::new(Tweet::new()));
