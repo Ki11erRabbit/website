@@ -19,6 +19,11 @@ Due to Rust's ownership rules, there are many types that represent these rules. 
 
 Many owned values contain heap allocated values but will automatically clean up their resources when they go out of scope.
 
+You can read more about `Box<T>` and `Rc<T>` in chapter 15 which is about smart pointers.
+
+I'll introduce `Box<T>` it is a way of allocating things on the heap.
+This is commonly used for making recursive data (i.e. putting a struct inside of itself).
+
 ## Vectors and Strings
 
 ### Vectors
@@ -52,8 +57,6 @@ The last one takes ownership of the vector and turns it into a iterator type.
 Iterators have a whole bunch of useful methods to transform the stream of data.
 Below is an example of using `map` to alter the data and collect to convert the iterator back into a vector.
 ```rust
-
-
 v = v.into_iter().map(|x| x + 1).collect::<Vec<_>>();
 ```
 
@@ -137,7 +140,6 @@ enum BinaryTree {
 		right: Box<BinaryTree>,
 	}
 }
-
 ```
 
 Two useful enums that is blessed by the Rust's compiler are called `Option<T>` and `Result<T,E>`.
