@@ -520,3 +520,12 @@ where
     U: Clone + Debug
 { todo!() }
 ```
+
+
+## Additional Resources on Rust
+These are YouTube channels that go over ideas and concepts of Rust that I find to be helpful and might make more sense than me.
+
+[No Boilerplate](https://www.youtube.com/watch?v=Q3AhzHq8ogs&list=PLZaoyhMXgBzoM9bfb5pyUOT3zjnaDdSEP)
+
+[Logan Smith](https://www.youtube.com/@_noisecode/videos)
+I highly recommend checking out Logan Smith's Cursed C++ Casts video.
