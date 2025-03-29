@@ -17,6 +17,7 @@ showTableOfContents = true
 ##### Extracurricular Activities
 * Linux Club President
 ##### Coursework
+* QA and DevOps
 * Concepts of Programming Languages
 * Software Design
 * Systems Programming
@@ -35,12 +36,13 @@ In no particular order
 * SQL
 * Java
 * Bash
+* Shell
 * Go
 * Coq
 
 ## Experience
 ### BYU Static Analysis Lab
-##### Research Assistant (April 2023 - December 2024) Provo, UT
+##### Research Assistant (April 2023 - Current) Provo, UT
 * Developed multiple non-trivial programs for static analysis
 * Developed a state of the art parser using fixpoints
 * Assisted in development of an abstract interpreter
@@ -54,9 +56,9 @@ In no particular order
 ## Projects
 
 ### Programming Projects
-#### Cocoa (August 2024 - Present)
-Primary Developer: [GitHub](https://github.com/Ki11erRabbit/Cocoa)
-* Designed a systems language inspired by Java, C#, C++, and Rust
+#### Rowan (January 2025 - Present)
+Primary Developer: [GitHub](https://github.com/Ki11erRabbit/rowan)
+* Designed a systems language inspired by Java, C#, Haskell, Rust, and Smalltalk
 * Implemented JIT Compilation through Cranelift
 * Wrote a bytecode compiler
 #### RUNE (Rust UNder Emacs) (July 2024)
