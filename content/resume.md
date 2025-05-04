@@ -24,6 +24,8 @@ showTableOfContents = true
 * Algorithm Design and Analysis
 * Technical Writing
 * Data Structures and Algorithms
+* Database Modeling Concepts
+* Computer Security
 
 ## Programming Languages Known
 In no particular order
@@ -39,6 +41,7 @@ In no particular order
 * Shell
 * Go
 * Coq
+* CSS
 
 ## Experience
 ### BYU Static Analysis Lab
@@ -61,10 +64,22 @@ Primary Developer: [GitHub](https://github.com/Ki11erRabbit/rowan)
 * Designed a systems language inspired by Java, C#, Haskell, Rust, and Smalltalk
 * Implemented JIT Compilation through Cranelift
 * Wrote a bytecode compiler
+
+#### Ferris-chan (April 2025 - Present)
+Primary Fullstack Developer: [GitHub](https://github.com/Ki11erRabbit/ferris-chan) [Live Website](https://ferrischan.killerrabbit.xyz/)
+* Implemented a simple imageboard website using WASM via Rust
+* Followed modern standards for accessibility
+
+#### Catalog (March 2025 - April 2025)
+Primary Developer: [GitHub](https://github.com/Ki11erRabbit/catalog)
+* Built a desktop application for managing collectables
+* Designed the database policy and structure for ease of use
+
 #### RUNE (Rust UNder Emacs) (July 2024)
 Contributor: [GitHub](https://github.com/CeleritasCelery/rune)
 * Built a code generator for fuzz testing Rune against Emacs
 * Provided code for string checking
+
 #### Koka Community (April 2024 - Present)
 Contributor and Maintainer: [GitHub](https://github.com/koka-community)
 * Developed key datastructures that are missing from Koka's Standard Library
@@ -72,18 +87,21 @@ Contributor and Maintainer: [GitHub](https://github.com/koka-community)
   * Deque: a growable ring buffer array datastructure
   * Heap: a Min-Max Heap that allows for it to be used as a Double-Ended Priority Queue with zero compromises
 * Developing bindings for the same linear algebra libraries as Numpy (BLAS)
+
 #### Commands as Arrow Types (February 2024 - April 2024)
 Primary Developer: [GitHub](https://github.com/Ki11erRabbit/CAAT-Shell)
 * Designed an experimental shell that generalized unix commands as function types
 * Developed multiple libraries across multiple languages
   * [Python](https://github.com/Ki11erRabbit/caat_python)
   * [Python](https://github.com/Ki11erRabbit/caat_rust)
+
 #### SEVI Text Editor (Structural Editor VIsual) (August 2023 - Novemeber 2023)
 Primary Developer: [GitHub](https://github.com/Ki11erRabbit/sevi)
 * Designed abstraction layers
 * Wrote a language server client
 * Worked with Git Submodules
 * Learned why rewrites are sub-optimal on large projects
+
 #### C with Classes (September 2022 - Novemeber 2022)
 Primary Developer: [GitHub](https://github.com/Ki11erRabbit/C-With-Classes)
 * Wrote a recursive decent parser by hand
