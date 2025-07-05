@@ -1,14 +1,13 @@
 +++
 title = 'Resume'
-date = 2024-09-13T11:51:41-06:00
 type = 'page'
 showTableOfContents = true
 +++
 
 # Alec Davis
-|email | github|
-|------|-------|
-|alecdavis _at_ killerrabbit.xyz| https://github.com/Ki11erRabbit|
+|Email | GitHub|LinkedIn|
+|------|-------|--------|
+|alecdavis _at_ killerrabbit.xyz| [https://github.com/Ki11erRabbit](https://github.com/Ki11erRabbit)|[https://www.linkedin.com/in/alec-davis-73030b373/](https://www.linkedin.com/in/alec-davis-73030b373/)|
 
 ## Education
 **Brigham Young Univerity**
@@ -19,6 +18,7 @@ showTableOfContents = true
 ##### Coursework
 * QA and DevOps
 * Concepts of Programming Languages
+* Functional Programming
 * Software Design
 * Systems Programming
 * Algorithm Design and Analysis
@@ -42,13 +42,22 @@ In no particular order
 * Go
 * Coq
 * CSS
+* Ansible
+* C#
 
 ## Experience
+
 ### BYU Static Analysis Lab
 ##### Research Assistant (April 2023 - Current) Provo, UT
 * Developed multiple non-trivial programs for static analysis
 * Developed a state of the art parser using fixpoints
 * Assisted in development of an abstract interpreter
+
+### Lawrence Livermore National Laboratory
+##### HPC Computing Scholar (June 2025 - August 2025) Livermore, CA
+* Built a small supercomputer
+* Automated deployment of said supercomputer using Ansible
+* Integrated Kafka with S3 and Elasicsearch
 
 ### BYU Intro to Programming TA
 ##### Teacher's Assistant (August 2022 - December 2022) Provo, UT
@@ -112,8 +121,9 @@ Primary Developer: [GitHub](https://github.com/Ki11erRabbit/C-With-Classes)
 #### Linux Workstation (January 2022 - Present)
 Systems Administrator
 * Used Linux as Workstation OS
-* Learned how to maintain and upgrade systems
-* Learned how to configure a NixOS system
+* Learned how to maintain a workstation for use in school and personal projects
+* Learned how to configure a NixOS system for reproducable and reliable deployment of Workstations
+* Developed a system for virtualized GPU passthrough
 
 ## Skills/Interests/Achievements
 * Eagle Scout at age 15
